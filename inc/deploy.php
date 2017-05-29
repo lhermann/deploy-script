@@ -117,7 +117,7 @@ function checkEnvironment($binaries = array()) {
     foreach ($binaries as $command) {
         $path = trim(shell_exec('which ' . $command));
         if ($path == '') {
-            header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
+            // header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
             throw new \Exception(sprintf('%s not available. It needs to be installed on the server for this script to work.', $command));
         } else {
             $version = explode("\n", shell_exec($command.' --version'));
