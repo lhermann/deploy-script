@@ -76,25 +76,25 @@ function deploy() {
 	// Check Environment
 	if( !checkEnvironment( $binaries )) {
 		cleanup( $localrepo );
-		break;
+		return;
 	}
 
 	// Fetch updates from Git repository
 	if( !gitPull( $remoterepo, $localrepo, BRANCH, $versionfile )) {
 		cleanup( $localrepo );
-		break;
+		return;
 	}
 
 	// Execute build pipeline
 	if( !build( $localrepo, $buildpipeline )) {
 		cleanup( $localrepo );
-		break;
+		return;
 	}
 
 	// Copy files to production environment
 	if( !copyToProduction( $localrepo, SOURCEDIR, TARGETDIR, DELETE_FILES, EXCLUDE )) {
 		cleanup( $localrepo );
-		break;
+		return;
 	}
 
 	// Remove the `$localrepo` (depends on CLEAN_UP)

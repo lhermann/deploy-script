@@ -121,7 +121,7 @@ if (file_exists(DEPLOY_SCRIPT)) {
     require_once DEPLOY_SCRIPT;
 } else {
     header("HTTP/1.0 404 Not Found", true, 404);
-    print("Deploy script no found!")
+    print("Deploy script no found!");
     exit();
 }
 ?>
