@@ -116,7 +116,7 @@ define('DEPLOY_SCRIPT', 'inc/deploy.php');
 /**
  * Thank you, that's it
  */
-
+define('base_dir', __DIR__);
 if (file_exists(DEPLOY_SCRIPT)) {
     require_once DEPLOY_SCRIPT;
 } else {

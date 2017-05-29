@@ -17,7 +17,7 @@ set_error_handler(function($severity, $message, $file, $line) {
 });
 
 set_exception_handler(function($e) {
-	header('HTTP/1.1 500 Internal Server Error');
+	// header('HTTP/1.1 500 Internal Server Error');
 	echo "Error in " . basename($e->getFile()) . " on line {$e->getLine()}: " . htmlSpecialChars($e->getMessage());
 	die();
 });
@@ -25,10 +25,15 @@ set_exception_handler(function($e) {
 /**
  * Default constants
  */
-define('TIME_LIMIT', 30);
+$locale='en_US.UTF-8';
+define('TIME_LIMIT', 60);
+putenv('LC_ALL='.$locale);
 putenv('PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:');
+setlocale(LC_ALL,$locale);
 
-
+/**
+ * Force SSL
+ */
 if( REQUIREHTTPS && !( $_SERVER['REQUEST_SCHEME'] == 'https' || $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' ) ) {
 	throw new \Exception("Insecure Connection. Please connect via HTTPS.");
 }
@@ -63,7 +68,7 @@ switch (strtolower($_SERVER['HTTP_X_GITHUB_EVENT'])) {
  */
 function deploy() {
 	$remoterepo		= REMOTEREPOSITORY;
-	$localrepo		= TEMPDIR . PROJECTNAME . '.repo/';
+	$localrepo		= (defined(BASE_DIR) ? BASE_DIR.'/' : '') . TEMPDIR . PROJECTNAME . '.repo/';
 	$versionfile	= $localrepo . VERSION_FILE;
 	$buildpipeline	= BUILDPIPELINE;
 
@@ -250,6 +255,7 @@ function executeCommands($local, $commands = array()) {
 			chdir($local); // Ensure that we're in the right directory
 		}
 		$tmp = array();
+        $return_code = "";
 		exec($command.' 2>&1', $tmp, $return_code); // Execute the command
 		// Output the result
 		printf("$ %s\n%s\n\n",
@@ -261,7 +267,7 @@ function executeCommands($local, $commands = array()) {
 
 		// Error handling and cleanup
 		if ($return_code !== 0) {
-			header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
+			// header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
 			printf("Error encountered!\nStopping the script to prevent possible data loss.\nCHECK THE DATA IN YOUR TARGET DIR!\nStopping script execution");
 
 			// Log the error
