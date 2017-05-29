@@ -125,5 +125,3 @@ if (file_exists(DEPLOY_SCRIPT)) {
     exit();
 }
 ?>
-
-
