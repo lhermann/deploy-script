@@ -29,7 +29,7 @@ define('TIME_LIMIT', 30);
 putenv('PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:');
 
 
-if( REQUIREHTTPS && $_SERVER['REQUEST_SCHEME'] == 'http' ) {
+if( REQUIREHTTPS && !( $_SERVER['REQUEST_SCHEME'] == 'https' || $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' ) ) {
 	throw new \Exception("Insecure Connection. Please connect via HTTPS.");
 }
 
