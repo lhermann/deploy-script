@@ -68,7 +68,7 @@ switch (strtolower($_SERVER['HTTP_X_GITHUB_EVENT'])) {
  */
 function deploy() {
     $remoterepo     = REMOTEREPOSITORY;
-    $localrepo      = (defined(BASE_DIR) ? BASE_DIR.'/' : '') . TEMPDIR . PROJECTNAME . '.repo/';
+    $localrepo      = BASE_DIR . '/' . TEMPDIR . PROJECTNAME . '.repo/';
     $versionfile    = $localrepo . VERSION_FILE;
     $buildpipeline  = BUILDPIPELINE;
 
