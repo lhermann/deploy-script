@@ -96,7 +96,7 @@ define('BUILDPIPELINE', array( // serialized array of strings
  *              Use rsync exclude pattern syntax for each element.
  * @var serialized array of strings
  */
-define('SOURCEDIR', '_site');
+define('SOURCEDIR', '_site/');
 define('TARGETDIR', '~/example.com/');
 define('DELETE_FILES', false);
 define('EXCLUDE', serialize(array(
