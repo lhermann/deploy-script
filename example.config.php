@@ -96,7 +96,7 @@ define('BUILDPIPELINE', array( // serialized array of strings
  *              Use rsync exclude pattern syntax for each element.
  * @var serialized array of strings
  */
-define('SOURCEDIR', 'build');
+define('SOURCEDIR', '_site');
 define('TARGETDIR', '~/example.com/');
 define('DELETE_FILES', false);
 define('EXCLUDE', serialize(array(
@@ -116,7 +116,7 @@ define('DEPLOY_SCRIPT', 'inc/deploy.php');
 /**
  * Thank you, that's it
  */
-define('base_dir', __DIR__);
+define('BASE_DIR', __DIR__);
 if (file_exists(DEPLOY_SCRIPT)) {
     require_once DEPLOY_SCRIPT;
 } else {
