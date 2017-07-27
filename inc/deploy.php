@@ -116,7 +116,9 @@ function checkEnvironment($binaries = array()) {
 
     foreach ($binaries as $command) {
         $path = trim(shell_exec('which ' . $command));
-        if ($path == '') {
+        $shell_cmd = ['cd'];
+        // return of which is empty for shell commands like cd
+        if ( $path == '' && !in_array($command, $shell_cmd) ) {
             // header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
             throw new \Exception(sprintf('%s not available. It needs to be installed on the server for this script to work.', $command));
         } else {
