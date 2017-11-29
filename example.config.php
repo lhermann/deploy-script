@@ -1,122 +1,76 @@
 <?php
-/**
- * Deployment configuration
- *
- * @version 1.1.0
- */
-
-/**
- * General Settings
- *
- * PROJECTNAME  the project's name
- * @var string
- */
-define('PROJECTNAME', 'example.com');
-
-
-/**
- * Pyload Settings
- *
- * REQUIREHTTPS whether to accept insequre connections or not
- * @var boolean
- *
- * SECRET       github's webhook secret
- * @var string
- */
-define('REQUIREHTTPS', true);
-define('SECRET', '123456789');
-
+/****************************
+ * Deployment configuration *
+ ****************************/
 
 /**
  * Remote Repository
  *
  * REMOTEREPOSITORY the remote github repository
- * @var string
- *
  * BRANCH       The branch that's being deployed.
  *              Must be present in the remote repository.
- * @var string
- */
-define('REMOTEREPOSITORY', 'https://lhermann@github.com/lhermann/example.git');
-define('BRANCH', 'master');
-
-
-/**
- * Local Repository
- *
- * TEMPDIR      the directory in which the local repository will be created.
- *              Local Repo: path/to/tempdir/PROJECTNAME.repo/
- * @var string
- *
- * VERSION_FILE a file containing the currently deployed version number, leave empty if not desired.
- * @var string
- *
- * CLEAN_UP     whether to keep the local repository or to delete it after deploy.
+ * SECRET       github's webhook secret
+ * REQUIREHTTPS whether to accept insequre connections or not
+ * CLEAN_UP      whether to keep the local repository or to delete it after deploy.
  *              It is recommended to keep the repository in order to save time for consecutive deploys.
- * @var boolean
+ * VERSION_FILE  a file containing the currently deployed version number, leave empty if not desired.
  */
-define('TEMPDIR', ''); // for the local repo
-define('VERSION_FILE', 'VERSION');
-define('CLEAN_UP', false);
+define('REMOTEREPOSITORY',  'https://lhermann@github.com/lhermann/example.git');
+define('BRANCH',            'master');
+define('SECRET',            '123456789');
+define('REQUIREHTTPS',       true);
+define('CLEAN_UP',           false);
+define('VERSION_FILE',      'VERSION');
 
 
 /**
- * Build Pipeline
+ * Build
  *
  * BUILDPIPELINE commands to be executed in order to build the production version
- * @var serialized array of strings
  */
-define('BUILDPIPELINE', array( // serialized array of strings
-    'bundle install --path ~/deploy/bundle',
+define('BUILDPIPELINE', array( // array of strings
     'npm install',
-    'bundle exec jekyll build'
+    'npm run build'
 ));
 
 
 /**
- * Paths for file transfer
- *
- * SOURCEDIR    is relative to the local repository. To copy the repository itself simply
- *              leave empty.
- * @var string
- *
- * TARGETDIR    is the production docroot
- * @var string
- *
- * DELETE_FILES Whether to delete the files that are not in the repository but are on the
+ * Deploy
+ * DELETE_FILES  Whether to delete the files that are not in the repository but are on the
  *              local (server) machine.
  *              !!! WARNING !!! This can lead to a serious loss of data if you're not
  *              careful. All files that are not in the repository are going to be deleted,
  *              except the ones defined in EXCLUDE section. BE CAREFUL!
- * @var boolean
- *
+ * SOURCETARGET Array with one or more from-to pairs for rsync
  * EXCLUDE      The directories and files that are to be excluded when updating the code.
- *              Normally, these are the directories containing files that are not part of
- *              code base, for example user uploads or server-specific configuration files.
  *              Use rsync exclude pattern syntax for each element.
- * @var serialized array of strings
  */
-define('SOURCEDIR', '_site/');
-define('TARGETDIR', '~/example.com/');
 define('DELETE_FILES', false);
-define('EXCLUDE', serialize(array(
+define('SOURCETARGET', array(
+    ['dist', '$HOME/example.com/']
+));
+define('EXCLUDE', array(
     '.git',
     '.gitignore'
-)));
+));
 
 
 /**
- * Deploy Script
+ * Post Deploy
  *
- * DEPLOY_SCRIPT  relative path to deploy.php
- * @var string
+ * POSTPIPELINE commands to be executed after the deployment
  */
-define('DEPLOY_SCRIPT', 'inc/deploy.php');
+define('POSTPIPELINE', array( // array of strings
+    'npm run deploy'
+));
+
 
 /**
  * Thank you, that's it
  */
-define('BASE_DIR', __DIR__);
+define('FILENAME',       __FILE__);
+define('BASE_DIR',       __DIR__);
+define('DEPLOY_SCRIPT', 'inc/deploy.php');
 if (file_exists(DEPLOY_SCRIPT)) {
     require_once DEPLOY_SCRIPT;
 } else {

@@ -52,9 +52,6 @@ switch (strtolower($_SERVER['HTTP_X_GITHUB_EVENT'])) {
         deploy();
         break;
 
-//  case 'create':
-//      break;
-
     default:
         header('HTTP/1.0 404 Not Found');
         echo "Event:$_SERVER[HTTP_X_GITHUB_EVENT] Payload:\n";
@@ -67,10 +64,14 @@ switch (strtolower($_SERVER['HTTP_X_GITHUB_EVENT'])) {
  * The application deploy process
  */
 function deploy() {
+    $temp = explode('/', FILENAME);
+    $projectname = explode('.', end($temp))[0];
+
     $remoterepo     = REMOTEREPOSITORY;
-    $localrepo      = BASE_DIR . '/' . TEMPDIR . PROJECTNAME . '.repo/';
+    $localrepo      = BASE_DIR . '/' . $projectname . '.repo/';
     $versionfile    = $localrepo . VERSION_FILE;
     $buildpipeline  = BUILDPIPELINE;
+    $postpipeline   = POSTPIPELINE;
 
     // Determine required binaries
     $binaries = array('git', 'rsync');
@@ -97,7 +98,18 @@ function deploy() {
     }
 
     // Copy files to production environment
-    if( !copyToProduction( $localrepo, SOURCEDIR, TARGETDIR, DELETE_FILES, EXCLUDE )) {
+    if(defined('SOURCEDIR') && defined('TARGETDIR')) {
+        $sourcetarget = array(['SOURCEDIR', 'TARGETDIR']);
+    } else {
+        $sourcetarget = SOURCETARGET;
+    }
+    if( !copyToProduction( $localrepo, $sourcetarget, DELETE_FILES, EXCLUDE )) {
+        cleanup( $localrepo );
+        return;
+    }
+
+    // Execute post deploy pipeline
+    if( !post( $localrepo, $postpipeline )) {
         cleanup( $localrepo );
         return;
     }
@@ -188,10 +200,8 @@ function gitPull($remote, $localrepo, $branch = 'master', $versionfile = NULL) {
 /**
  *
  */
-function build($localrepo, $buildpipeline = array()) {
+function build($localrepo, $commands = array()) {
     if( !is_string($localrepo) || $localrepo === NULL ) throw new \Exception("Argument 1 of " . __FUNCTION__ . " must be a defined string.");
-
-    $commands = $buildpipeline;
 
     // Execute commands
     print("======[ Executing build pipeline ]======\n");
@@ -202,27 +212,40 @@ function build($localrepo, $buildpipeline = array()) {
 /**
  *
  */
-function copyToProduction($localrepo, $sourcedir, $targetdir, $delete_files = false, $serializedexclude = '') {
+function copyToProduction($localrepo, $sourcetarget, $delete_files = false, $excludearray = array()) {
     if( !is_string($localrepo) || $localrepo === NULL ) throw new \Exception("Argument 1 of " . __FUNCTION__ . " must be a defined string.");
-    if( !is_string($sourcedir) || $sourcedir === NULL ) throw new \Exception("Argument 2 of " . __FUNCTION__ . " must be a defined string.");
-    if( !is_string($targetdir) || $targetdir === NULL ) throw new \Exception("Argument 3 of " . __FUNCTION__ . " must be a defined string.");
+    if( !is_array($sourcetarget) || $sourcetarget === NULL ) throw new \Exception("Argument 2 of " . __FUNCTION__ . " must be a defined array.");
 
     // Unserialize exclude parameters
     $exclude = '';
-    foreach (unserialize($serializedexclude) as $exc) {
+    foreach ($excludearray as $exc) {
         $exclude .= ' --exclude='.$exc;
     }
 
     // Copy command
-    $commands[] = sprintf('rsync -azvO %s %s %s %s',
-        $localrepo . $sourcedir,
-        $targetdir,
-        ($delete_files) ? '--delete-after' : '',
-        $exclude
-    );
+    $commands = array();
+    foreach ($sourcetarget as $value) {
+        $commands[] = sprintf('rsync -azvO %s %s %s %s',
+            $localrepo . $value[0],
+            $value[1],
+            ($delete_files) ? '--delete-after' : '',
+            $exclude
+        );
+    }
 
     // Execute commands
     print("======[ Copying files to production environment ]======\n");
+    return executeCommands($localrepo, $commands);
+}
+
+/**
+ *
+ */
+function post($localrepo, $commands = array()) {
+    if( !is_string($localrepo) || $localrepo === NULL ) throw new \Exception("Argument 1 of " . __FUNCTION__ . " must be a defined string.");
+
+    // Execute commands
+    print("======[ Executing post pipeline ]======\n");
     return executeCommands($localrepo, $commands);
 }
 
