@@ -3,3 +3,4 @@ OBSOLETE
 configs
 *.repo
 *.config.php
+bundle/
