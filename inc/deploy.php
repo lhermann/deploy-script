@@ -31,6 +31,7 @@ set_exception_handler(function($e) {
     exit();
 });
 
+
 /**
  * Default constants
  */
@@ -44,12 +45,14 @@ define('BASEDIR', dirname(__DIR__));
 define('PROJECTNAME', basename(FILENAME, '.config.php'));
 define('LOCALREPOSITORY', BASEDIR . '/' . PROJECTNAME . '.repo/');
 
+
 /**
  * Force SSL
  */
 if( REQUIREHTTPS && !( $_SERVER['REQUEST_SCHEME'] == 'https' || $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' ) ) {
     throw new \Exception("Insecure Connection. Please connect via HTTPS.");
 }
+
 
 /**
  * This script will verify the secret (if set) and fetch the payload into `$github_payload`
@@ -62,6 +65,32 @@ if(defined('DEBUG') && DEBUG) {
 } else {
     require( 'github-webhook-handler.php' );
 }
+
+
+/**
+ * Evaluate Request
+ */
+switch (strtolower($github_event)) {
+    case 'ping':
+        echo 'pong';
+        exit();
+
+    case 'push':
+        // verify branch otherwise bail
+        if(basename($github_payload->ref) !== BRANCH) {
+            print("This script only deploys on push to '".BRANCH."' branch");
+            exit();
+        }
+        break;
+
+    default:
+        // For debug only. Can be found in GitHub hook log.
+        header('HTTP/1.0 404 Not Found');
+        echo "Event:\n$github_event\n\nPayload:\n";
+        print_r($github_payload);
+        exit();
+}
+
 
 /**
  * Setup logfile
@@ -76,38 +105,35 @@ Log::write("Head Commit:", false);
 Log::write($github_payload->head_commit, false);
 Log::write();
 
+
 /**
- * Evaluate Request
+ * Prepare Deploy
+ * (Output is returned)
  */
-switch (strtolower($github_event)) {
-    case 'ping':
-        echo 'pong';
-        exit();
+prepare_deploy();
 
-    case 'push':
-        prepare_deploy();
 
-        // Return http request but continue executing in order not to exceed
-        // Github's 10s timeout on webhooks
-        print("======[ Closing connection to avoid webhook timeout ]======\n");
-        print("Full log can be found at " . Log::filename() . "\n\n");
-        Log::disable_print();
-        Request::end();
+/**
+ * Return http request but continue executing in order not to exceed
+ * Github's 10s timeout on webhooks
+ */
+print("======[ Closing connection to avoid webhook timeout ]======\n");
+print("Full log can be found at " . Log::filename() . "\n\n");
+Log::disable_print();
+Request::end();
 
-        deploy();
-        break;
 
-    default:
-        // For debug only. Can be found in GitHub hook log.
-        header('HTTP/1.0 404 Not Found');
-        echo "Event:\n$github_event\n\nPayload:\n";
-        print_r($github_payload);
-        exit();
-}
-
+/**
+ * Deploy
+ * (Output is not returned, only written to log)
+ */
+deploy();
 Log::write();
 Log::write("======[ Deployment finished ]======");
 exit();
+
+
+
 
 
 
