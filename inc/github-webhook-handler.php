@@ -50,5 +50,5 @@ switch ($_SERVER['CONTENT_TYPE']) {
 
 # Payload structure depends on triggered event
 # https://developer.github.com/v3/activity/events/types/
-$payload = json_decode($json);
-$event = strtolower($_SERVER['HTTP_X_GITHUB_EVENT']);
+$github_payload = json_decode($json);
+$github_event = strtolower($_SERVER['HTTP_X_GITHUB_EVENT']);

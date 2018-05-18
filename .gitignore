@@ -4,3 +4,4 @@ configs
 *.repo
 *.config.php
 bundle/
+*.log

@@ -1,4 +1,8 @@
 <?php
+
+require_once('Log.php');
+require_once('Request.php');
+
 /**
  * PHP Git deploy script by Lukas Hermann
  *
@@ -17,19 +21,28 @@ set_error_handler(function($severity, $message, $file, $line) {
 });
 
 set_exception_handler(function($e) {
-    // header('HTTP/1.1 500 Internal Server Error');
-    echo "Error in " . basename($e->getFile()) . " on line {$e->getLine()}: " . htmlSpecialChars($e->getMessage());
-    die();
+    if(Request::is_active()) header('HTTP/1.1 500 Internal Server Error');
+    Log::write(sprintf(
+        "Error in %s on line %s: %s",
+        basename($e->getFile()),
+        $e->getLine(),
+        htmlSpecialChars($e->getMessage())
+    ));
+    exit();
 });
 
 /**
  * Default constants
  */
+Request::start();
 $locale='en_US.UTF-8';
 define('TIME_LIMIT', 60);
 putenv('LC_ALL='.$locale);
 putenv('PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:');
 setlocale(LC_ALL,$locale);
+define('BASEDIR', dirname(__DIR__));
+define('PROJECTNAME', basename(FILENAME, '.config.php'));
+define('LOCALREPOSITORY', BASEDIR . '/' . PROJECTNAME . '.repo/');
 
 /**
  * Force SSL
@@ -39,83 +52,124 @@ if( REQUIREHTTPS && !( $_SERVER['REQUEST_SCHEME'] == 'https' || $_SERVER['HTTP_X
 }
 
 /**
- * This script will verify the secret (if set) and fetch the payload into `$payload`
+ * This script will verify the secret (if set) and fetch the payload into `$github_payload`
  */
-require( 'github-webhook-handler.php' );
+if(DEBUG) {
+    $github_event = 'push';
+    $github_payload = json_decode(
+        file_get_contents(__DIR__ . '/example_payload.json')
+    );
+} else {
+    require( 'github-webhook-handler.php' );
+}
 
-switch (strtolower($_SERVER['HTTP_X_GITHUB_EVENT'])) {
+/**
+ * Setup logfile
+ */
+Log::set_file(sprintf('%s_%s.log',
+    PROJECTNAME,
+    date('Y-m-d_H:i:s', strtotime($github_payload->head_commit->timestamp))
+));
+Log::setup_logfile();
+Log::write("Event: $github_event");
+Log::write("Head Commit:", false);
+Log::write($github_payload->head_commit, false);
+Log::write();
+
+/**
+ * Evaluate Request
+ */
+switch (strtolower($github_event)) {
     case 'ping':
         echo 'pong';
-        break;
+        exit();
 
     case 'push':
+        prepare_deploy();
+
+        // Return http request but continue executing in order not to exceed
+        // Github's 10s timeout on webhooks
+        print("======[ Closing connection to avoid webhook timeout ]======\n");
+        print("Full log can be found at " . Log::filename() . "\n\n");
+        Log::disable_print();
+        Request::end();
+
         deploy();
         break;
 
     default:
+        // For debug only. Can be found in GitHub hook log.
         header('HTTP/1.0 404 Not Found');
-        echo "Event:$_SERVER[HTTP_X_GITHUB_EVENT] Payload:\n";
-        print_r($payload); # For debug only. Can be found in GitHub hook log.
-        die();
+        echo "Event:\n$github_event\n\nPayload:\n";
+        print_r($github_payload);
+        exit();
 }
 
+Log::write();
+Log::write("======[ Deployment finished ]======");
+exit();
+
+
+
+
+/*********************************************
+ * HELPER FUNCTIONS
+ *********************************************/
 
 /**
- * The application deploy process
+ * Prepare the application deploy process
  */
-function deploy() {
-    $temp = explode('/', FILENAME);
-    $projectname = explode('.', end($temp))[0];
-
-    $remoterepo     = REMOTEREPOSITORY;
-    $localrepo      = BASE_DIR . '/' . $projectname . '.repo/';
-    $versionfile    = $localrepo . VERSION_FILE;
-    $buildpipeline  = BUILDPIPELINE;
-    $postpipeline   = POSTPIPELINE;
+function prepare_deploy() {
 
     // Determine required binaries
     $binaries = array('git', 'rsync');
-    foreach( $buildpipeline as $command ) {
+    foreach( BUILDPIPELINE as $command ) {
         $binaries[] = explode(" ", $command)[0];
     }
 
     // Check Environment
     if( !checkEnvironment( $binaries )) {
-        cleanup( $localrepo );
+        cleanup( LOCALREPOSITORY );
         return;
     }
 
     // Fetch updates from Git repository
-    if( !gitPull( $remoterepo, $localrepo, BRANCH, $versionfile )) {
-        cleanup( $localrepo );
+    if( !gitPull( REMOTEREPOSITORY, LOCALREPOSITORY, BRANCH, LOCALREPOSITORY . VERSION_FILE )) {
+        cleanup( LOCALREPOSITORY );
         return;
     }
+}
+
+/**
+ * The application deploy process
+ */
+function deploy() {
 
     // Execute build pipeline
-    if( !build( $localrepo, $buildpipeline )) {
-        cleanup( $localrepo );
+    if( !build( LOCALREPOSITORY, BUILDPIPELINE )) {
+        cleanup( LOCALREPOSITORY );
         return;
     }
 
     // Copy files to production environment
     if(defined('SOURCEDIR') && defined('TARGETDIR')) {
-        $sourcetarget = array(['SOURCEDIR', 'TARGETDIR']);
+        $sourcetarget = array([SOURCEDIR, TARGETDIR]);
     } else {
         $sourcetarget = SOURCETARGET;
     }
-    if( !copyToProduction( $localrepo, $sourcetarget, DELETE_FILES, EXCLUDE )) {
-        cleanup( $localrepo );
+    if( !copyToProduction( LOCALREPOSITORY, $sourcetarget, DELETE_FILES, EXCLUDE )) {
+        cleanup( LOCALREPOSITORY );
         return;
     }
 
     // Execute post deploy pipeline
-    if( !post( $localrepo, $postpipeline )) {
-        cleanup( $localrepo );
+    if( !post( LOCALREPOSITORY, POSTPIPELINE )) {
+        cleanup( LOCALREPOSITORY );
         return;
     }
 
-    // Remove the `$localrepo` (depends on CLEAN_UP)
-    cleanup( $localrepo );
+    // Remove the `LOCALREPOSITORY` (depends on CLEAN_UP)
+    cleanup( LOCALREPOSITORY );
 }
 
 
@@ -123,8 +177,8 @@ function deploy() {
  *
  */
 function checkEnvironment($binaries = array()) {
-    print("======[ Checking the environment ]======\n");
-    print("Running as " . trim(shell_exec('whoami')) . "\n");
+    Log::write("======[ Checking the environment ]======");
+    Log::write("Running as " . trim(shell_exec('whoami')));
 
     foreach ($binaries as $command) {
         $path = trim(shell_exec('which ' . $command));
@@ -135,11 +189,12 @@ function checkEnvironment($binaries = array()) {
             throw new \Exception(sprintf('%s not available. It needs to be installed on the server for this script to work.', $command));
         } else {
             $version = explode("\n", shell_exec($command.' --version'));
-            printf('%s : %s'."\n", $path, $version[0]);
+            Log::write(sprintf('%s : %s', $path, $version[0]));
         }
     }
 
-    print("Environment OK.\n\n");
+    Log::write("Environment OK.");
+    Log::write();
     return true;
 }
 
@@ -192,7 +247,7 @@ function gitPull($remote, $localrepo, $branch = 'master', $versionfile = NULL) {
     }
 
     // Execute commands
-    print("======[ Pulling from Repository ]======\n");
+    Log::write("======[ Pulling from Repository ]======");
     return executeCommands($localrepo, $commands);
 }
 
@@ -204,7 +259,7 @@ function build($localrepo, $commands = array()) {
     if( !is_string($localrepo) || $localrepo === NULL ) throw new \Exception("Argument 1 of " . __FUNCTION__ . " must be a defined string.");
 
     // Execute commands
-    print("======[ Executing build pipeline ]======\n");
+    Log::write("======[ Executing build pipeline ]======\n");
     return executeCommands($localrepo, $commands);
 }
 
@@ -234,7 +289,7 @@ function copyToProduction($localrepo, $sourcetarget, $delete_files = false, $exc
     }
 
     // Execute commands
-    print("======[ Copying files to production environment ]======\n");
+    Log::write("======[ Copying files to production environment ]======\n");
     return executeCommands($localrepo, $commands);
 }
 
@@ -245,7 +300,7 @@ function post($localrepo, $commands = array()) {
     if( !is_string($localrepo) || $localrepo === NULL ) throw new \Exception("Argument 1 of " . __FUNCTION__ . " must be a defined string.");
 
     // Execute commands
-    print("======[ Executing post pipeline ]======\n");
+    Log::write("======[ Executing post pipeline ]======\n");
     return executeCommands($localrepo, $commands);
 }
 
@@ -260,7 +315,7 @@ function cleanup($localrepo) {
         );
 
         // Execute commands
-        print("======[ Cleaning up temporary files ]======\n");
+        Log::write("======[ Cleaning up temporary files ]======\n");
         return executeCommands($localrepo, $commands);
     }
     return true;
@@ -273,7 +328,6 @@ function cleanup($localrepo) {
 function executeCommands($local, $commands = array()) {
     if( !is_string($local) || $local === NULL ) throw new \Exception("Argument 1 of " . __FUNCTION__ . " must be a defined string.");
 
-    $output = '';
     foreach ($commands as $command) {
         set_time_limit(TIME_LIMIT); // Reset the time limit for each command
         if (file_exists($local) && is_dir($local)) {
@@ -281,19 +335,19 @@ function executeCommands($local, $commands = array()) {
         }
         $tmp = array();
         $return_code = "";
-        exec($command.' 2>&1', $tmp, $return_code); // Execute the command
+        exec($command.' 2>&1', $output, $return_code); // Execute the command
+
         // Output the result
-        printf("$ %s\n%s\n\n",
-            trim($command),
-            trim(implode("\n", $tmp))
-        );
-        $output .= ob_get_contents();
-        ob_flush(); // Try to output everything as it happens
+        Log::write('$ ' . $command);
+        foreach ($output as $line) {
+            Log::write($line);
+        }
+        Log::write();
 
         // Error handling and cleanup
         if ($return_code !== 0) {
             // header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
-            printf("Error encountered!\nStopping the script to prevent possible data loss.\nCHECK THE DATA IN YOUR TARGET DIR!\nStopping script execution");
+            Log::write("Error encountered!\nStopping the script to prevent possible data loss.\nCHECK THE DATA IN YOUR TARGET DIR!\nStopping script execution");
 
             // Log the error
             $error = sprintf('Deployment error on %s using %s!',
@@ -304,7 +358,8 @@ function executeCommands($local, $commands = array()) {
             return false;
         }
     }
-    print("(" . basename(__FILE__) . ") Done.\n\n");
+    Log::write("(" . basename(__FILE__) . ") Done.");
+    Log::write();
     return true;
 }
 

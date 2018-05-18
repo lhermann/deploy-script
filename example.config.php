@@ -79,13 +79,13 @@ define('POSTPIPELINE', array( // array of strings
  * Thank you, that's it
  */
 define('FILENAME',       __FILE__);
-define('BASE_DIR',       __DIR__);
+define('DEBUG',          false);
 define('DEPLOY_SCRIPT', 'inc/deploy.php');
 if (file_exists(DEPLOY_SCRIPT)) {
     require_once DEPLOY_SCRIPT;
 } else {
     header("HTTP/1.0 404 Not Found", true, 404);
-    print("Deploy script no found!");
+    print("Deploy script no found in " . __DIR__ . "/" . DEPLOY_SCRIPT);
     exit();
 }
 ?>
