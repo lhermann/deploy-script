@@ -346,8 +346,10 @@ function executeCommands($local, $commands = array()) {
 
         // Error handling and cleanup
         if ($return_code !== 0) {
-            // header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
-            Log::write("Error encountered!\nStopping the script to prevent possible data loss.\nCHECK THE DATA IN YOUR TARGET DIR!\nStopping script execution");
+            Log::write("Error encountered!");
+            Log::write("Stopping the script to prevent possible data loss.");
+            Log::write("CHECK THE DATA IN YOUR TARGET DIR!");
+            Log::write("Stopping script execution");
 
             // Log the error
             $error = sprintf('Deployment error on %s using %s!',
