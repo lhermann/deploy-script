@@ -19,7 +19,7 @@
  *              It is recommended to keep the repository in order to save time for consecutive deploys.
  * VERSION_FILE  a file containing the currently deployed version number, leave empty if not desired.
  */
-define('REMOTEREPOSITORY',  'https://lhermann@github.com/lhermann/example.git');
+define('REMOTEREPOSITORY',  'git@github.com:user/repo.git');
 define('BRANCH',            'master');
 define('SECRET',            '123456789');
 define('REQUIREHTTPS',       true);
