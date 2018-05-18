@@ -68,7 +68,7 @@ if(defined('DEBUG') && DEBUG) {
  */
 Log::set_file(sprintf('%s_%s.log',
     PROJECTNAME,
-    date('Y-m-d_H:i:s', strtotime($github_payload->head_commit->timestamp))
+    date('Ymd_His', strtotime($github_payload->head_commit->timestamp))
 ));
 Log::setup_logfile();
 Log::write("Event: $github_event");
