@@ -54,7 +54,7 @@ if( REQUIREHTTPS && !( $_SERVER['REQUEST_SCHEME'] == 'https' || $_SERVER['HTTP_X
 /**
  * This script will verify the secret (if set) and fetch the payload into `$github_payload`
  */
-if(DEBUG) {
+if(defined('DEBUG') && DEBUG) {
     $github_event = 'push';
     $github_payload = json_decode(
         file_get_contents(__DIR__ . '/example_payload.json')
