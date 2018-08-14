@@ -47,17 +47,30 @@ define('LOCALREPOSITORY', BASEDIR . '/' . PROJECTNAME . '.repo/');
 
 
 /**
+ * Prepare variables for manual redeploy via shell
+ */
+define('MANUAL', isset($_SERVER['SHELL']));
+
+
+/**
  * Force SSL
  */
-if( REQUIREHTTPS && !( $_SERVER['REQUEST_SCHEME'] == 'https' || $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' ) ) {
+if( !MANUAL && REQUIREHTTPS && !( $_SERVER['REQUEST_SCHEME'] == 'https' || $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' ) ) {
     throw new \Exception("Insecure Connection. Please connect via HTTPS.");
 }
 
 
 /**
- * This script will verify the secret (if set) and fetch the payload into `$github_payload`
+ * This script will verify the secret (if set) and fetch the payload into
+ * `$github_payload`
  */
-if(defined('DEBUG') && DEBUG) {
+if( MANUAL || (defined('DEBUG') && DEBUG) ) {
+    $github_event = 'push';
+    $github_payload = json_decode(
+        file_get_contents(__DIR__ . '/manual_deploy_payload.json')
+    );
+    $github_payload->head_commit->timestamp = date('c');
+} elseif( defined('DEBUG') && DEBUG ) {
     $github_event = 'push';
     $github_payload = json_decode(
         file_get_contents(__DIR__ . '/example_payload.json')
@@ -101,7 +114,11 @@ Log::set_file(sprintf('%s_%s.log',
 ));
 Log::setup_logfile();
 Log::write("Event: $github_event");
-Log::write("Head Commit:", false);
+Log::write(sprintf(
+    "Head Commit: [%s] %s",
+    substr($github_payload->head_commit->id, 0, 7),
+    $github_payload->head_commit->message
+));
 Log::write($github_payload->head_commit, false);
 Log::write();
 

@@ -1,209 +1,205 @@
 {
-  "ref": "refs/heads/master",
-  "before": "9caf1e89b7a7864c19454d61ba243eebe44eeb2b",
-  "after": "4c9f6a849d8e4a8445155fa38c3d6e0b4fc7e36a",
+  "ref": "refs/heads/staging",
+  "before": "93be698a36da29f352c129164db4984ec5c6550c",
+  "after": "5c995aa4098b50eb23935c381d93d8ec6f014365",
   "created": false,
   "deleted": false,
   "forced": false,
   "base_ref": null,
-  "compare":
-    "https://github.com/lhermann/hacksawrdige/compare/9caf1e89b7a7...4c9f6a849d8e",
+  "compare": "https://github.com/lhermann/langify/compare/93be698a36da...5c995aa4098b",
   "commits": [
     {
-      "id": "4c9f6a849d8e4a8445155fa38c3d6e0b4fc7e36a",
-      "tree_id": "efc844cb51840fe418d4781c0da996d3acb36cd4",
+      "id": "1cdd9ff25ae208e4bbcc79d1ab1bfc0fb6197ff9",
+      "tree_id": "aeba7bcf12b79aafd08f9b16b081c2e2e73f145e",
       "distinct": true,
-      "message": "Fixed link in advertiser",
-      "timestamp": "2017-08-22T17:54:15+02:00",
-      "url":
-        "https://github.com/lhermann/hacksawrdige/commit/4c9f6a849d8e4a8445155fa38c3d6e0b4fc7e36a",
+      "message": "Improve serializer code",
+      "timestamp": "2018-08-14T11:24:39+02:00",
+      "url": "https://github.com/lhermann/langify/commit/1cdd9ff25ae208e4bbcc79d1ab1bfc0fb6197ff9",
       "author": {
-        "name": "Lukas Hermann",
-        "email": "lukher6@web.de",
-        "username": "lhermann"
+        "name": "Daniel",
+        "email": "33256939+dgilge@users.noreply.github.com",
+        "username": "dgilge"
       },
       "committer": {
-        "name": "Lukas Hermann",
-        "email": "lukher6@web.de",
-        "username": "lhermann"
+        "name": "Daniel",
+        "email": "33256939+dgilge@users.noreply.github.com",
+        "username": "dgilge"
       },
       "added": [],
       "removed": [],
-      "modified": ["_includes/advertiser.html"]
+      "modified": ["django/panta/api/serializers.py"]
+    },
+    {
+      "id": "5c995aa4098b50eb23935c381d93d8ec6f014365",
+      "tree_id": "2b0e65f9d5528c065fa58ee6f1bb37f2c95e9e0b",
+      "distinct": true,
+      "message": "Add config encryption (#126)",
+      "timestamp": "2018-08-14T20:04:43+02:00",
+      "url": "https://github.com/lhermann/langify/commit/5c995aa4098b50eb23935c381d93d8ec6f014365",
+      "author": {
+        "name": "Daniel",
+        "email": "33256939+dgilge@users.noreply.github.com",
+        "username": "dgilge"
+      },
+      "committer": {
+        "name": "Daniel",
+        "email": "33256939+dgilge@users.noreply.github.com",
+        "username": "dgilge"
+      },
+      "added": [],
+      "removed": [],
+      "modified": [
+        "django/Pipfile",
+        "django/Pipfile.lock",
+        "django/config.example.ini",
+        "django/langify/settings.py"
+      ]
     }
   ],
   "head_commit": {
-    "id": "4c9f6a849d8e4a8445155fa38c3d6e0b4fc7e36a",
-    "tree_id": "efc844cb51840fe418d4781c0da996d3acb36cd4",
+    "id": "5c995aa4098b50eb23935c381d93d8ec6f014365",
+    "tree_id": "2b0e65f9d5528c065fa58ee6f1bb37f2c95e9e0b",
     "distinct": true,
-    "message": "Fixed link in advertiser",
-    "timestamp": "2017-08-22T17:54:15+02:00",
-    "url":
-      "https://github.com/lhermann/hacksawrdige/commit/4c9f6a849d8e4a8445155fa38c3d6e0b4fc7e36a",
+    "message": "Add config encryption (#126)",
+    "timestamp": "2018-08-14T20:04:43+02:00",
+    "url": "https://github.com/lhermann/langify/commit/5c995aa4098b50eb23935c381d93d8ec6f014365",
     "author": {
-      "name": "Lukas Hermann",
-      "email": "lukher6@web.de",
-      "username": "lhermann"
+      "name": "Daniel",
+      "email": "33256939+dgilge@users.noreply.github.com",
+      "username": "dgilge"
     },
     "committer": {
-      "name": "Lukas Hermann",
-      "email": "lukher6@web.de",
-      "username": "lhermann"
+      "name": "Daniel",
+      "email": "33256939+dgilge@users.noreply.github.com",
+      "username": "dgilge"
     },
     "added": [],
     "removed": [],
-    "modified": ["_includes/advertiser.html"]
+    "modified": [
+      "django/Pipfile",
+      "django/Pipfile.lock",
+      "django/config.example.ini",
+      "django/langify/settings.py"
+    ]
   },
   "repository": {
-    "id": 73006285,
-    "name": "hacksawrdige",
-    "full_name": "lhermann/hacksawrdige",
+    "id": 110117590,
+    "node_id": "MDEwOlJlcG9zaXRvcnkxMTAxMTc1OTA=",
+    "name": "langify",
+    "full_name": "lhermann/langify",
     "owner": {
       "name": "lhermann",
       "email": "lukher6@web.de",
       "login": "lhermann",
       "id": 2800117,
+      "node_id": "MDQ6VXNlcjI4MDAxMTc=",
       "avatar_url": "https://avatars3.githubusercontent.com/u/2800117?v=4",
       "gravatar_id": "",
       "url": "https://api.github.com/users/lhermann",
       "html_url": "https://github.com/lhermann",
       "followers_url": "https://api.github.com/users/lhermann/followers",
-      "following_url":
-        "https://api.github.com/users/lhermann/following{/other_user}",
+      "following_url": "https://api.github.com/users/lhermann/following{/other_user}",
       "gists_url": "https://api.github.com/users/lhermann/gists{/gist_id}",
-      "starred_url":
-        "https://api.github.com/users/lhermann/starred{/owner}{/repo}",
-      "subscriptions_url":
-        "https://api.github.com/users/lhermann/subscriptions",
+      "starred_url": "https://api.github.com/users/lhermann/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/lhermann/subscriptions",
       "organizations_url": "https://api.github.com/users/lhermann/orgs",
       "repos_url": "https://api.github.com/users/lhermann/repos",
       "events_url": "https://api.github.com/users/lhermann/events{/privacy}",
-      "received_events_url":
-        "https://api.github.com/users/lhermann/received_events",
+      "received_events_url": "https://api.github.com/users/lhermann/received_events",
       "type": "User",
       "site_admin": false
     },
-    "private": false,
-    "html_url": "https://github.com/lhermann/hacksawrdige",
-    "description": null,
+    "private": true,
+    "html_url": "https://github.com/lhermann/langify",
+    "description": "An open translation system",
     "fork": false,
-    "url": "https://github.com/lhermann/hacksawrdige",
-    "forks_url": "https://api.github.com/repos/lhermann/hacksawrdige/forks",
-    "keys_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/keys{/key_id}",
-    "collaborators_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/collaborators{/collaborator}",
-    "teams_url": "https://api.github.com/repos/lhermann/hacksawrdige/teams",
-    "hooks_url": "https://api.github.com/repos/lhermann/hacksawrdige/hooks",
-    "issue_events_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/issues/events{/number}",
-    "events_url": "https://api.github.com/repos/lhermann/hacksawrdige/events",
-    "assignees_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/assignees{/user}",
-    "branches_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/branches{/branch}",
-    "tags_url": "https://api.github.com/repos/lhermann/hacksawrdige/tags",
-    "blobs_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/git/blobs{/sha}",
-    "git_tags_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/git/tags{/sha}",
-    "git_refs_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/git/refs{/sha}",
-    "trees_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/git/trees{/sha}",
-    "statuses_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/statuses/{sha}",
-    "languages_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/languages",
-    "stargazers_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/stargazers",
-    "contributors_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/contributors",
-    "subscribers_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/subscribers",
-    "subscription_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/subscription",
-    "commits_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/commits{/sha}",
-    "git_commits_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/git/commits{/sha}",
-    "comments_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/comments{/number}",
-    "issue_comment_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/issues/comments{/number}",
-    "contents_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/contents/{+path}",
-    "compare_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/compare/{base}...{head}",
-    "merges_url": "https://api.github.com/repos/lhermann/hacksawrdige/merges",
-    "archive_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/{archive_format}{/ref}",
-    "downloads_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/downloads",
-    "issues_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/issues{/number}",
-    "pulls_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/pulls{/number}",
-    "milestones_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/milestones{/number}",
-    "notifications_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/notifications{?since,all,participating}",
-    "labels_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/labels{/name}",
-    "releases_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/releases{/id}",
-    "deployments_url":
-      "https://api.github.com/repos/lhermann/hacksawrdige/deployments",
-    "created_at": "2016-11-06T17:14:46Z",
-    "updated_at": "2016-11-06T17:16:51Z",
-    "pushed_at": "2017-08-22T15:54:31.919Z",
-    "git_url": "git://github.com/lhermann/hacksawrdige.git",
-    "ssh_url": "git@github.com:lhermann/hacksawrdige.git",
-    "clone_url": "https://github.com/lhermann/hacksawrdige.git",
-    "svn_url": "https://github.com/lhermann/hacksawrdige",
+    "url": "https://github.com/lhermann/langify",
+    "forks_url": "https://api.github.com/repos/lhermann/langify/forks",
+    "keys_url": "https://api.github.com/repos/lhermann/langify/keys{/key_id}",
+    "collaborators_url": "https://api.github.com/repos/lhermann/langify/collaborators{/collaborator}",
+    "teams_url": "https://api.github.com/repos/lhermann/langify/teams",
+    "hooks_url": "https://api.github.com/repos/lhermann/langify/hooks",
+    "issue_events_url": "https://api.github.com/repos/lhermann/langify/issues/events{/number}",
+    "events_url": "https://api.github.com/repos/lhermann/langify/events",
+    "assignees_url": "https://api.github.com/repos/lhermann/langify/assignees{/user}",
+    "branches_url": "https://api.github.com/repos/lhermann/langify/branches{/branch}",
+    "tags_url": "https://api.github.com/repos/lhermann/langify/tags",
+    "blobs_url": "https://api.github.com/repos/lhermann/langify/git/blobs{/sha}",
+    "git_tags_url": "https://api.github.com/repos/lhermann/langify/git/tags{/sha}",
+    "git_refs_url": "https://api.github.com/repos/lhermann/langify/git/refs{/sha}",
+    "trees_url": "https://api.github.com/repos/lhermann/langify/git/trees{/sha}",
+    "statuses_url": "https://api.github.com/repos/lhermann/langify/statuses/{sha}",
+    "languages_url": "https://api.github.com/repos/lhermann/langify/languages",
+    "stargazers_url": "https://api.github.com/repos/lhermann/langify/stargazers",
+    "contributors_url": "https://api.github.com/repos/lhermann/langify/contributors",
+    "subscribers_url": "https://api.github.com/repos/lhermann/langify/subscribers",
+    "subscription_url": "https://api.github.com/repos/lhermann/langify/subscription",
+    "commits_url": "https://api.github.com/repos/lhermann/langify/commits{/sha}",
+    "git_commits_url": "https://api.github.com/repos/lhermann/langify/git/commits{/sha}",
+    "comments_url": "https://api.github.com/repos/lhermann/langify/comments{/number}",
+    "issue_comment_url": "https://api.github.com/repos/lhermann/langify/issues/comments{/number}",
+    "contents_url": "https://api.github.com/repos/lhermann/langify/contents/{+path}",
+    "compare_url": "https://api.github.com/repos/lhermann/langify/compare/{base}...{head}",
+    "merges_url": "https://api.github.com/repos/lhermann/langify/merges",
+    "archive_url": "https://api.github.com/repos/lhermann/langify/{archive_format}{/ref}",
+    "downloads_url": "https://api.github.com/repos/lhermann/langify/downloads",
+    "issues_url": "https://api.github.com/repos/lhermann/langify/issues{/number}",
+    "pulls_url": "https://api.github.com/repos/lhermann/langify/pulls{/number}",
+    "milestones_url": "https://api.github.com/repos/lhermann/langify/milestones{/number}",
+    "notifications_url": "https://api.github.com/repos/lhermann/langify/notifications{?since,all,participating}",
+    "labels_url": "https://api.github.com/repos/lhermann/langify/labels{/name}",
+    "releases_url": "https://api.github.com/repos/lhermann/langify/releases{/id}",
+    "deployments_url": "https://api.github.com/repos/lhermann/langify/deployments",
+    "created_at": 1510233446,
+    "updated_at": "2018-08-12T21:00:47Z",
+    "pushed_at": 1534269978,
+    "git_url": "git://github.com/lhermann/langify.git",
+    "ssh_url": "git@github.com:lhermann/langify.git",
+    "clone_url": "https://github.com/lhermann/langify.git",
+    "svn_url": "https://github.com/lhermann/langify",
     "homepage": null,
-    "size": 8711,
-    "stargazers_count": 0,
-    "watchers_count": 0,
-    "language": "CSS",
+    "size": 2976,
+    "stargazers_count": 2,
+    "watchers_count": 2,
+    "language": "Python",
     "has_issues": true,
     "has_projects": true,
     "has_downloads": true,
-    "has_wiki": true,
+    "has_wiki": false,
     "has_pages": false,
     "forks_count": 0,
     "mirror_url": null,
-    "open_issues_count": 0,
+    "archived": false,
+    "open_issues_count": 64,
+    "license": null,
     "forks": 0,
-    "open_issues": 0,
-    "watchers": 0,
+    "open_issues": 64,
+    "watchers": 2,
     "default_branch": "master",
-    "stargazers": 0,
+    "stargazers": 2,
     "master_branch": "master"
   },
   "pusher": {
-    "name": "lhermann",
-    "email": "lukher6@web.de"
+    "name": "dgilge",
+    "email": "33256939+dgilge@users.noreply.github.com"
   },
   "sender": {
-    "login": "lhermann",
-    "id": 2800117,
-    "avatar_url": "https://avatars3.githubusercontent.com/u/2800117?v=4",
+    "login": "dgilge",
+    "id": 33256939,
+    "node_id": "MDQ6VXNlcjMzMjU2OTM5",
+    "avatar_url": "https://avatars0.githubusercontent.com/u/33256939?v=4",
     "gravatar_id": "",
-    "url": "https://api.github.com/users/lhermann",
-    "html_url": "https://github.com/lhermann",
-    "followers_url": "https://api.github.com/users/lhermann/followers",
-    "following_url":
-      "https://api.github.com/users/lhermann/following{/other_user}",
-    "gists_url": "https://api.github.com/users/lhermann/gists{/gist_id}",
-    "starred_url":
-      "https://api.github.com/users/lhermann/starred{/owner}{/repo}",
-    "subscriptions_url": "https://api.github.com/users/lhermann/subscriptions",
-    "organizations_url": "https://api.github.com/users/lhermann/orgs",
-    "repos_url": "https://api.github.com/users/lhermann/repos",
-    "events_url": "https://api.github.com/users/lhermann/events{/privacy}",
-    "received_events_url":
-      "https://api.github.com/users/lhermann/received_events",
+    "url": "https://api.github.com/users/dgilge",
+    "html_url": "https://github.com/dgilge",
+    "followers_url": "https://api.github.com/users/dgilge/followers",
+    "following_url": "https://api.github.com/users/dgilge/following{/other_user}",
+    "gists_url": "https://api.github.com/users/dgilge/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/dgilge/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/dgilge/subscriptions",
+    "organizations_url": "https://api.github.com/users/dgilge/orgs",
+    "repos_url": "https://api.github.com/users/dgilge/repos",
+    "events_url": "https://api.github.com/users/dgilge/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/dgilge/received_events",
     "type": "User",
     "site_admin": false
   }
