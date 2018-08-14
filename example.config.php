@@ -25,6 +25,7 @@ define('SECRET',            '123456789');
 define('REQUIREHTTPS',       true);
 define('CLEAN_UP',           false);
 define('VERSION_FILE',      'VERSION');
+define('KEEP_LOGS',           10);
 
 
 /**

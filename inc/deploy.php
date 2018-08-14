@@ -108,10 +108,10 @@ switch (strtolower($github_event)) {
 /**
  * Setup logfile
  */
-Log::set_file(sprintf('%s_%s.log',
+Log::set_file(
     PROJECTNAME,
     date('Y-m-d_His', strtotime($github_payload->head_commit->timestamp))
-));
+);
 Log::setup_logfile();
 Log::write("Event: $github_event");
 Log::write(sprintf(

@@ -8,12 +8,21 @@ class Log {
         return dirname(__DIR__) . '/logs/' . self::$file;
     }
 
-    public static function set_file($file) {
-        self::$file = $file;
+    public static function set_file($prefix, $date) {
+        self::delete_old_logfiles($prefix);
+        self::$file = sprintf('%s_%s.log', $prefix, $date);
     }
 
     public static function disable_print() {
         self::$print = false;
+    }
+
+    public static function delete_old_logfiles($prefix) {
+        $keep = defined('KEEP_LOGS') ? KEEP_LOGS - 1 : 13;
+        $glob = glob( dirname(__DIR__) . '/logs/' . $prefix . "_*" );
+        foreach (array_slice($glob, 0, -$keep) as $file) {
+            unlink($file);
+        }
     }
 
     // Create logfile or empty existing one
