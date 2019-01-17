@@ -1,8 +1,8 @@
 {
-  "ref": "refs/heads/staging",
-  "head_commit": {
-    "id": "0000000",
-    "message": "Manual deploy through shell",
-    "timestamp": null
-  }
+    "ref": "refs/heads/master",
+    "head_commit": {
+        "id": "0000000",
+        "message": "Manual deploy through shell",
+        "timestamp": null
+    }
 }

@@ -64,8 +64,8 @@ if( !MANUAL && REQUIREHTTPS && !( $_SERVER['REQUEST_SCHEME'] == 'https' || $_SER
  * This script will verify the secret (if set) and fetch the payload into
  * `$github_payload`
  */
-if( MANUAL || (defined('DEBUG') && DEBUG) ) {
-    $github_event = 'push';
+if( MANUAL ) {
+    $github_event = 'manual';
     $github_payload = json_decode(
         file_get_contents(__DIR__ . '/manual_deploy_payload.json')
     );
@@ -94,6 +94,9 @@ switch (strtolower($github_event)) {
             print("This script only deploys on push to '".BRANCH."' branch");
             exit();
         }
+        break;
+
+    case 'manual':
         break;
 
     default:
