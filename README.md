@@ -18,7 +18,7 @@ Additionally, a manual deploy can be performed by calling `php your.config.php` 
 
 ## When using private repositories with multiple ssh keys
 
-SSH will look for the user's ~/.ssh/config file. I have mine setup as:
+SSH will look for the user's `~/.ssh/config` file. I have mine setup as:
 
     Host gitserv
         Hostname        github.com
