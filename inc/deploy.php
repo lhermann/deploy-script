@@ -55,7 +55,14 @@ define('MANUAL', isset($_SERVER['SHELL']));
 /**
  * Force SSL
  */
-if( !MANUAL && REQUIREHTTPS && !( $_SERVER['REQUEST_SCHEME'] == 'https' || $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' ) ) {
+if(
+    !MANUAL
+    && REQUIREHTTPS
+    && !(
+        (array_key_exists('REQUEST_SCHEME', $_SERVER) && $_SERVER['REQUEST_SCHEME'] == 'https')
+        || (array_key_exists('HTTP_X_FORWARDED_PROTO', $_SERVER) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
+    )
+) {
     throw new \Exception("Insecure Connection. Please connect via HTTPS.");
 }
 
@@ -68,6 +75,12 @@ if( MANUAL ) {
     $github_event = 'manual';
     $github_payload = json_decode(
         file_get_contents(__DIR__ . '/manual_deploy_payload.json')
+    );
+    $github_payload->head_commit->timestamp = date('c');
+} elseif(!SECRET) {
+    $github_event = 'no-secret';
+    $github_payload = json_decode(
+        file_get_contents(__DIR__ . '/no_secret_payload.json')
     );
     $github_payload->head_commit->timestamp = date('c');
 } elseif( defined('DEBUG') && DEBUG ) {
@@ -97,6 +110,7 @@ switch (strtolower($github_event)) {
         break;
 
     case 'manual':
+    case 'no-secret':
         break;
 
     default:
@@ -381,6 +395,7 @@ function executeCommands($local, $commands = array()) {
         }
         $tmp = array();
         $return_code = "";
+        $output = "";
         exec($command.' 2>&1', $output, $return_code); // Execute the command
 
         // Output the result
