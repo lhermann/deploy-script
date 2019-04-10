@@ -44,6 +44,7 @@ setlocale(LC_ALL,$locale);
 define('BASEDIR', dirname(__DIR__));
 define('PROJECTNAME', basename(FILENAME, '.config.php'));
 define('LOCALREPOSITORY', BASEDIR . '/' . PROJECTNAME . '.repo/');
+if(!defined('GITLAB')) define('GITLAB', true);
 
 
 /**
@@ -71,7 +72,14 @@ if(
  * This script will verify the secret (if set) and fetch the payload into
  * `$github_payload`
  */
-if( MANUAL ) {
+if( GITLAB ) {
+    $github_event = 'gitlab';
+    $github_payload = json_decode(
+        file_get_contents(__DIR__ . '/no_secret_payload.json')
+    );
+    $github_payload->head_commit->message = "Gitlab Deploy";
+    $github_payload->head_commit->timestamp = date('c');
+} elseif( MANUAL ) {
     $github_event = 'manual';
     $github_payload = json_decode(
         file_get_contents(__DIR__ . '/manual_deploy_payload.json')
@@ -110,6 +118,7 @@ switch (strtolower($github_event)) {
         break;
 
     case 'manual':
+    case 'gitlab':
     case 'no-secret':
         break;
 
