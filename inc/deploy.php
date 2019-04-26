@@ -156,7 +156,7 @@ Log::write();
 prepare_deploy();
 
 
-if(GITLAB) {
+if(!GITLAB) {
     /**
      * Return http request but continue executing in order not to exceed
      * Github's 10s timeout on webhooks
