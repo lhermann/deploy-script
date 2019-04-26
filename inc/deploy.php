@@ -156,19 +156,21 @@ Log::write();
 prepare_deploy();
 
 
-/**
- * Return http request but continue executing in order not to exceed
- * Github's 10s timeout on webhooks
- */
-print("======[ Closing connection to avoid webhook timeout ]======\n");
-print("Full log can be found at " . Log::filename() . "\n\n");
-Log::disable_print();
-Request::end();
+if(GITLAB) {
+    /**
+     * Return http request but continue executing in order not to exceed
+     * Github's 10s timeout on webhooks
+     * (Future output is not returned, only written to log)
+     */
+    print("======[ Closing connection to avoid Github webhook timeout ]======\n");
+    print("Full log can be found at " . Log::filename() . "\n\n");
+    Log::disable_print();
+    Request::end();
+}
 
 
 /**
  * Deploy
- * (Output is not returned, only written to log)
  */
 deploy();
 Log::write();
