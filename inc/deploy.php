@@ -44,7 +44,7 @@ setlocale(LC_ALL,$locale);
 define('BASEDIR', dirname(__DIR__));
 define('PROJECTNAME', basename(FILENAME, '.config.php'));
 define('LOCALREPOSITORY', BASEDIR . '/' . PROJECTNAME . '.repo/');
-if(!defined('GITLAB')) define('GITLAB', true);
+if(!defined('GITLAB')) define('GITLAB', false);
 
 
 /**
