@@ -9,6 +9,11 @@ class Request {
 
     public static function start() {
         ob_start();
+        ob_implicit_flush();
+    }
+
+    public static function flush() {
+        ob_flush();
     }
 
     public static function end() {

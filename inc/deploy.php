@@ -57,11 +57,9 @@ define('MANUAL', isset($_SERVER['SHELL']));
  * Force SSL
  */
 if(
-    !MANUAL
-    && REQUIREHTTPS
-    && !(
-        (array_key_exists('REQUEST_SCHEME', $_SERVER) && $_SERVER['REQUEST_SCHEME'] == 'https')
-        || (array_key_exists('HTTP_X_FORWARDED_PROTO', $_SERVER) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
+    !MANUAL && REQUIREHTTPS && !(
+        (array_key_exists('REQUEST_SCHEME', $_SERVER) && $_SERVER['REQUEST_SCHEME'] == 'https') ||
+        (array_key_exists('HTTP_X_FORWARDED_PROTO', $_SERVER) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')
     )
 ) {
     throw new \Exception("Insecure Connection. Please connect via HTTPS.");
@@ -155,14 +153,13 @@ Log::write();
  */
 prepare_deploy();
 
-
-if(!GITLAB) {
+if(true) {
     /**
      * Return http request but continue executing in order not to exceed
      * Github's 10s timeout on webhooks
      * (Future output is not returned, only written to log)
      */
-    print("======[ Closing connection to avoid Github webhook timeout ]======\n");
+    print("======[ Closing connection to avoid timeout ]======\n");
     print("Full log can be found at " . Log::filename() . "\n\n");
     Log::disable_print();
     Request::end();
